@@ -8,7 +8,6 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace PinterestBoardScraper
@@ -69,7 +68,7 @@ namespace PinterestBoardScraper
 
         private void ProcessUrls()
         {
-            Parallel.ForEach(_urls, u =>
+            foreach (var u in _urls)
             {
                 if (!ProcessThread.IsAlive)
                 {
@@ -77,7 +76,7 @@ namespace PinterestBoardScraper
                 }
 
                 ProcessBoard(u);
-            });
+            }
 
             this.Invoke((MethodInvoker)delegate ()
             {
@@ -186,7 +185,7 @@ namespace PinterestBoardScraper
                         lbProgress.Invoke(new Action<string>(UpdateProgress), "Board " + boardName + " got " + count + " pins");
                         ctr = 0;
 
-                        lbProgress.Invoke(new Action<string>(UpdateProgress), "Pause of 12 min before continuing. Pinterest constraints.");
+                        lbProgress.Invoke(new Action<string>(UpdateProgress), "Pause of 12 min before continuing. Pinterest constraints...");
                         Thread.Sleep(12 * 60 * 1000);// 15sec wait between batches
                     }
                 }
@@ -238,7 +237,7 @@ namespace PinterestBoardScraper
                 return;
             }
 
-            Parallel.ForEach(pins, p =>
+            foreach (var p in pins)
             {
                 try
                 {
@@ -305,7 +304,7 @@ namespace PinterestBoardScraper
                 {
                     return;
                 }
-            });
+            }
         }
 
         private string GetValidName(string note)
