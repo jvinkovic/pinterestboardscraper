@@ -39,6 +39,8 @@
             this.label3 = new System.Windows.Forms.Label();
             this.tbUrls = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
+            this.lbErrors = new System.Windows.Forms.ListBox();
+            this.label5 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -102,9 +104,10 @@
             // lbProgress
             // 
             this.lbProgress.FormattingEnabled = true;
+            this.lbProgress.HorizontalScrollbar = true;
             this.lbProgress.Location = new System.Drawing.Point(12, 352);
             this.lbProgress.Name = "lbProgress";
-            this.lbProgress.Size = new System.Drawing.Size(584, 121);
+            this.lbProgress.Size = new System.Drawing.Size(336, 121);
             this.lbProgress.TabIndex = 7;
             // 
             // label3
@@ -136,11 +139,31 @@
             this.label4.TabIndex = 10;
             this.label4.Text = "Insert URLs separated by new line";
             // 
+            // lbErrors
+            // 
+            this.lbErrors.FormattingEnabled = true;
+            this.lbErrors.HorizontalScrollbar = true;
+            this.lbErrors.Location = new System.Drawing.Point(354, 352);
+            this.lbErrors.Name = "lbErrors";
+            this.lbErrors.Size = new System.Drawing.Size(242, 121);
+            this.lbErrors.TabIndex = 11;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(351, 336);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(34, 13);
+            this.label5.TabIndex = 12;
+            this.label5.Text = "Errors";
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(608, 486);
+            this.ClientSize = new System.Drawing.Size(608, 485);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.lbErrors);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.tbUrls);
             this.Controls.Add(this.label3);
@@ -174,6 +197,8 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox tbUrls;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.ListBox lbErrors;
+        private System.Windows.Forms.Label label5;
     }
 }
 
