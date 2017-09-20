@@ -1,0 +1,12 @@
+#ignore thumbnails created by windows
+Thumbs.db
+#Ignore files build by Visual Studio
+*.pch
+*.suo
+*.bak
+*.cache
+*.ilk
+[Bb]in
+[Dd]ebug*/
+obj/
+[Rr]elease*/
