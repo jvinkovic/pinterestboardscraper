@@ -33,6 +33,9 @@ namespace PinterestBoardScraper
         public Main()
         {
             InitializeComponent();
+
+            lbProgress.SelectionMode = SelectionMode.MultiSimple;
+            lbErrors.SelectionMode = SelectionMode.MultiSimple;
         }
 
         private void btnFolderBrowse_Click(object sender, EventArgs e)
@@ -116,13 +119,39 @@ namespace PinterestBoardScraper
                 rClient = new RestClient(apiRoot);
 
                 string pinsUrl = restUrlTemplate.Replace("##BOARD_ID##", boardId);
-                var resp = rClient.Get(new RestRequest(pinsUrl, Method.GET));
-                string resultJson = resp.Content;
-                var result = JsonConvert.DeserializeObject<BoardPinsResponse>(resultJson);
 
+                bool succ = false;
+                int retCount = 0;
+                var req = new RestRequest(pinsUrl, Method.GET);
+                BoardPinsResponse result = new BoardPinsResponse();
+                string resultJson;
+                while (!succ && retCount < 50)
+                {
+                    try
+                    {
+                        retCount++;
+                        var resp = rClient.Get(req);
+                        resultJson = resp.Content;
+                        if (resp.StatusCode == System.Net.HttpStatusCode.OK)
+                        {
+                            result = JsonConvert.DeserializeObject<BoardPinsResponse>(resultJson);
+                            if (null != result?.data)
+                            {
+                                succ = true;
+                            }
+                        }
+                        else
+                        {
+                            if (!CheckResp(resp)) return;
+                        }
+                    }
+                    catch
+                    {
+                    }
+                }
                 ProcessPins(result.data, boardPath, boardName);
 
-                while (!string.IsNullOrEmpty(result.page.next))
+                while (!string.IsNullOrEmpty(result?.page?.next))
                 {
                     bool success = false;
                     int retryCount = 0;
@@ -138,7 +167,7 @@ namespace PinterestBoardScraper
                             if (response.StatusCode == System.Net.HttpStatusCode.OK)
                             {
                                 result = JsonConvert.DeserializeObject<BoardPinsResponse>(resultJson);
-                                if (null != result.data)
+                                if (null != result?.data)
                                 {
                                     success = true;
                                 }
@@ -157,7 +186,8 @@ namespace PinterestBoardScraper
                         lbProgress.Invoke(new Action<string>(UpdateProgress), "Board " + boardName + " got " + count + " pins");
                         ctr = 0;
 
-                        Thread.Sleep(15 * 1000);// 15sec wait between batches
+                        lbProgress.Invoke(new Action<string>(UpdateProgress), "Pause of 12 min before continuing. Pinterest constraints.");
+                        Thread.Sleep(12 * 60 * 1000);// 15sec wait between batches
                     }
                 }
 
@@ -172,6 +202,31 @@ namespace PinterestBoardScraper
             {
                 return;
             }
+        }
+
+        /// <summary>
+        /// checks if there are too many requests to the pinterest api and can we continue with requests
+        /// </summary>
+        /// <param name="resp">response of the request</param>
+        /// <returns>false if there are too many requests in an hour</returns>
+        private bool CheckResp(IRestResponse resp)
+        {
+            if ((int)resp.StatusCode == 429)// too many requests
+            {
+                lbProgress.Invoke((MethodInvoker)delegate ()
+                {
+                    MessageBox.Show("Too many requests! Try again for more in an hour!");
+
+                    btnStop.Enabled = false;
+                    btnStart.Enabled = true;
+                    btnFolderBrowse.Enabled = true;
+                    tbUrls.ReadOnly = false;
+                });
+
+                return false;
+            }
+
+            return true;
         }
 
         private void ProcessPins(PinData[] pins, string boardPath, string boardName)
@@ -223,6 +278,10 @@ namespace PinterestBoardScraper
                                 {
                                     imageData.SaveAs(filePath);
                                     success = true;
+                                }
+                                else
+                                {
+                                    if (!CheckResp(response)) return;
                                 }
                             }
                             catch
@@ -329,6 +388,23 @@ namespace PinterestBoardScraper
             lbProgress.Items.Add("");
 
             lbProgress.TopIndex = lbProgress.Items.Count - 1;
+        }
+
+        private void listBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Control && e.KeyCode == Keys.C)
+            {
+                var sb = new StringBuilder();
+                foreach (var item in (sender as ListBox).SelectedItems)
+                {
+                    sb.AppendLine(item.ToString());
+                }
+
+                if (sb.Length > 0)
+                {
+                    Clipboard.SetText(sb.ToString());
+                }
+            }
         }
     }
 }

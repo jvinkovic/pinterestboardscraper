@@ -109,6 +109,7 @@
             this.lbProgress.Name = "lbProgress";
             this.lbProgress.Size = new System.Drawing.Size(336, 121);
             this.lbProgress.TabIndex = 7;
+            this.lbProgress.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listBox_KeyDown);
             // 
             // label3
             // 
@@ -147,6 +148,7 @@
             this.lbErrors.Name = "lbErrors";
             this.lbErrors.Size = new System.Drawing.Size(242, 121);
             this.lbErrors.TabIndex = 11;
+            this.lbErrors.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listBox_KeyDown);
             // 
             // label5
             // 
@@ -161,7 +163,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(608, 485);
+            this.ClientSize = new System.Drawing.Size(608, 486);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.lbErrors);
             this.Controls.Add(this.label4);
